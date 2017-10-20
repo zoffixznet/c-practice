@@ -46,3 +46,27 @@ int find_part(int number) {
 			return i;
 	return -1;
 }
+
+void insert(void) {
+    int part_number;
+    if (num_parts == MAX_PARTS) {
+        puts("Database is full; can't add more parts.");
+        return;
+    }
+
+    printf("Enter part number: ");
+    scanf("%d", &part_number);
+
+    if (find_part(part_number) >= 0) {
+        puts("Part already fucking exists");
+        return;
+    }
+
+    inventory[num_parts].number = part_number;
+    printf("Enter part name: ");
+    read_line(inventory[num_arts].name, NAME_LEN);
+    printf("Enter fucking quantity on hand: ");
+    scanf("%d", &inventory[num_parts].on_hand);
+
+    num_parts++;
+}
