@@ -1,14 +1,9 @@
 #include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 int main(void) {
-    float loan, rate, monthly;
-    printf("Enter amount of loan:   "); scanf("%f", &loan   );
-    printf("Enter interest rate:    "); scanf("%f", &rate   );
-    printf("Enter monthly payments: "); scanf("%f", &monthly);
-
-    rate /= 1200;
-    for (int i = 1; i <= 3; i++) {
-        printf("Balance remaining after %d payment: $%.2f\n", i,
-            loan += loan*rate - monthly);
-    }
+    int r = lseek(STDIN_FILENO, 0, SEEK_CUR);
+    printf("STDIN IS: %s\n", (r && r != -1)  ? "seekable" : "NOT seekable");
+    return 0;
 }

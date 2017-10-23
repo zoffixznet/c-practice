@@ -70,3 +70,40 @@ void insert(void) {
 
     num_parts++;
 }
+
+void search(void) {
+    int i, number;
+
+    printf("Enter part number: ");
+    scanf("%d", &number);
+    i = find_part(number);
+    if (i >= 0) {
+        printf("Part name: M%s\n", inventory[i].name);
+        printf("Quantity on hand: %d\n", inventory[i].on_hand);
+    }
+    else
+      puts("Part not found.");
+}
+
+void update(void) {
+    int i, number, change;
+
+    printf("Enter part number: ");
+    scanf("%d", &number);
+    i = find_part(number);
+    if (i >= 0) {
+        printf("Enter change in quantity on hand: ");
+        scanf("%d", &change);
+        inventory[i].on_hand += change;
+    }
+    else
+        puts("Part not found.");
+}
+
+void print(void) {
+    printf("%7s      %-25s%11s\n", "Part number", "Part Name", "Quantity on Hand");
+    for (int i = 0; i < num_parts; i++) {
+        part p = inventory[i];
+        printf("%7s      %-25s%11s\n", p.number, p.name, p.on_hand);
+    }
+}
