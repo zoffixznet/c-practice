@@ -1,11 +1,7 @@
 #include <stdio.h>
-
-#define MVM_IS_32BIT_INT(i)     ((long long)i >= -2147483648LL && (long long)i <= 2147483647LL)
-#define MVM_IS_32BIT_INT2(i)     ((long long)(i) >= -2147483648LL && (long long)(i) <= 2147483647LL)
-
+#include <math.h>
 int main(void) {
-    int i, j;
-    printf("%lld\n", MVM_IS_32BIT_INT(42 ? i : j));
-    printf("%lld\n", MVM_IS_32BIT_INT2(42 ? i : j));
-    return 0;
+    printf("%.16f    %.16f\n", 1e0+6e-15, nextafter(1e0, 2e0));
 }
+
+// OUTPUT: More
