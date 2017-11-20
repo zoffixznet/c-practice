@@ -1,7 +1,7 @@
-#include "readline.h"
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include "readline.h"
 
 #define NAME_LEN 25
 #define MAX_PARTS 100
@@ -64,7 +64,7 @@ void insert(void) {
 
     inventory[num_parts].number = part_number;
     printf("Enter part name: ");
-    read_line(inventory[num_arts].name, NAME_LEN);
+    read_line(inventory[num_parts].name, NAME_LEN);
     printf("Enter fucking quantity on hand: ");
     scanf("%d", &inventory[num_parts].on_hand);
 
@@ -103,7 +103,7 @@ void update(void) {
 void print(void) {
     printf("%7s      %-25s%11s\n", "Part number", "Part Name", "Quantity on Hand");
     for (int i = 0; i < num_parts; i++) {
-        part p = inventory[i];
-        printf("%7s      %-25s%11s\n", p.number, p.name, p.on_hand);
+        struct part p = inventory[i];
+        printf("%7d      %-25s%11d\n", p.number, p.name, p.on_hand);
     }
 }
