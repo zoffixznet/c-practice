@@ -2,7 +2,11 @@
 #include <stdio.h>
 #include <string.h>
 
+<<<<<<< HEAD
 #define LINE_MAX 100
+=======
+#define LINE_MAX 30
+>>>>>>> x
 
 char line[LINE_MAX+1];
 int line_len  = 0;
