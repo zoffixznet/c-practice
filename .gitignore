@@ -1,0 +1,8 @@
+# Ignore all files without .c or .md extensions
+
+# turns out these rules are crap; they ignore directories
+.*
+core
+#!*.c
+#!*.md
+#!*.gitignore
