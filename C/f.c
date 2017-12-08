@@ -1,7 +1,19 @@
 #include <stdio.h>
-#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+
 int main(void) {
-    printf("%.16f    %.16f\n", 1e0+6e-15, nextafter(1e0, 2e0));
+    char *p;
+    long long size = 1000000000;
+    if (!(p = malloc(size))) {
+        printf("Failed to allocate %lld bytes of memory. Fuck off\n", size);
+        exit(1);
+    }
+    for (char *q = p; q - p < size; q++)
+        if (*q == 0) *q = 1;
+
+    *(p+size) = 0;
+    puts(p);
 }
 
 // OUTPUT: More
