@@ -77,13 +77,11 @@ void insert(void) {
     printf("Enter fucking quantity on hand: ");
     scanf("%d", &new_part->on_hand);
 
-    if (cur)
-		new_part->next = cur;
-
+	new_part->next = cur;
 	if (prev)
 		prev->next = new_part;
 	else
-		inventory = new_part;
+		inventory  = new_part;
 }
 
 void search(void) {
