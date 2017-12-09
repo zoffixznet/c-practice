@@ -42,10 +42,10 @@ struct part *find_part(int number) {
 	struct part *p;
 	for (
 		  p = inventory
-		; p && p->number != number
+		; p && p->number > number
 		; p = p->next
 	);
-	return p;
+	return p && p->number == number ? p : NULL;
 }
 
 void insert(void) {
