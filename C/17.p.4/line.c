@@ -38,12 +38,10 @@ void write_line(void) {
             putchar(line[i]);
         else {
             spaces_to_insert = extra_spaces / (num_words - 1);
-            // printf("(%d-%d-%d)", spaces_to_insert, extra_spaces, num_words-1);
             for (int j = 0; j <= spaces_to_insert; j++)
                 putchar(' ');
             extra_spaces -= spaces_to_insert;
             num_words--;
-            // printf("[%d]", extra_spaces);
         }
     }
     putchar('\n');
