@@ -1,27 +1,56 @@
 #include "line.h"
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#define LINE_MAX 76
+#define LINE_MAX 46
 
-char line[LINE_MAX+1];
+typedef struct word {
+    char *word;
+    struct word *next;
+} Word;
+
+Word *line = NULL;
 int line_len  = 0;
 int num_words = 0;
 
 void clear_line(void) {
-    line[0]   = '\0';
+    while (line) {
+        Word *to_del = line;
+        line = line->next;
+        free(to_del);
+    }
 
     line_len  = 0;
     num_words = 0;
 }
 
 void add_word(const char *word) {
-    if (num_words > 0) {
-        line[line_len  ] = ' ';
-        line[++line_len] = '\0';
+    Word *new_word = malloc(sizeof(*new_word));
+    if (new_word == NULL) {
+        printf("Could not allocate memory for a new word! Fuck off.\n");
+        exit(1);
     }
-    strcat(line, word);
-    line_len += strlen(word);
+
+    int len = strlen(word);
+    line_len += len + 1; // +1 is for the space after the word
+    new_word->word = malloc(len + 1);
+    if (new_word->word == NULL) {
+        printf("Could not allocate memory for a new word! Fuck off.\n");
+        exit(1);
+    }
+    strcpy(new_word->word, word);
+
+    new_word->next = NULL;
+    if (line == NULL)
+        line = new_word;
+    else {
+        Word *end = line;
+        while (end->next != NULL)
+            end = end->next;
+        end->next = new_word;
+    }
+
     num_words++;
 }
 
@@ -32,22 +61,27 @@ int space_remaining(void) {
 void write_line(void) {
     int extra_spaces, spaces_to_insert;
 
-    extra_spaces = LINE_MAX - strlen(line);
-    for (int i = 0; i < line_len; i++) {
-        if (line[i] != ' ')
-            putchar(line[i]);
-        else {
+    extra_spaces = space_remaining();
+    while (line != NULL) {
+        printf("%s", line->word);
+        line = line->next;
+        if (num_words > 1) {
             spaces_to_insert = extra_spaces / (num_words - 1);
             for (int j = 0; j <= spaces_to_insert; j++)
                 putchar(' ');
             extra_spaces -= spaces_to_insert;
-            num_words--;
         }
+        num_words--;
     }
     putchar('\n');
 }
 
 void flush_line(void) {
-    if (line_len > 0)
-        puts(line);
+    while (line != NULL) {
+        printf("%s", line->word);
+        line = line->next;
+        if (line != NULL)
+            putchar(' ');
+    }
+    putchar('\n');
 }
