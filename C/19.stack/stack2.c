@@ -16,6 +16,8 @@ PRIVATE void die(const char *message) {
     exit(EXIT_FAILURE);
 }
 
+PUBLIC char *impl(void) { return "Linked-list-based Stacker v0.001001"; }
+
 PUBLIC void make_empty(void) {
     while (stack) {
         Node *del_node = stack;

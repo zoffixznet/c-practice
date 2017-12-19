@@ -14,6 +14,8 @@ PRIVATE void die(const char *message) {
     exit(EXIT_FAILURE);
 }
 
+PUBLIC char *impl(void) { return "Array-based Stacker v0.001001"; }
+
 PUBLIC void make_empty(void) { top = 0; }
 PUBLIC bool is_empty(void) { return top == 0; }
 PUBLIC bool is_full(void) { return top == STACK_SIZE; }
