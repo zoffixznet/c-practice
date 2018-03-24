@@ -4,7 +4,7 @@
 
 #define STR2(x) #x
 #define STR(x) STR2(x)
-#define MAX 1000
+#define MAX 1000+100
 
 void bail(void) {
     puts("Fuck off");

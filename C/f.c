@@ -7,11 +7,7 @@ static inline double z(double a, double b) {
 }
 
 int main(void) {
-    double d, dd;
-    printf("Enter a fucking double: ");
-    if (scanf("%lf", &d) < 1) exit(1);
-    for (unsigned int i = 0; i < UINT_MAX; i++)
-        dd = z(d, d-1);
-    printf("Result: %g\n", dd);
+    double z = 0.219947518065601987e0;
+    printf("%.17g\n", z);
     return 1;
 }
