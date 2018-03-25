@@ -21,6 +21,7 @@
 #include <assert.h> // assert
 #include <math.h> // ceil
 #include <stdio.h> // sprintf
+#include <stdlib.h>
 #include <string.h>
 
 #ifdef _MSC_VER
@@ -332,7 +333,7 @@ static int i_to_str(int val, char *str)
 }
 
 int dtoa_grisu3(double v, char *dst) {
-        int d_exp, len, success, i;
+        int d_exp, len, success, i, decimal_pos;
         uint64_t u64 = CAST_U64(v);
         char *s2 = dst;
         assert(dst);
@@ -350,39 +351,61 @@ int dtoa_grisu3(double v, char *dst) {
         // If grisu3 was not able to convert the number to a string, then use old sprintf (suboptimal).
         if (!success) return sprintf(s2, "%.17g", v) + (int)(s2 - dst);
 
-        // s2[len] = '\0';
-        printf("\n\ns2 = `%s`\nlen = %d\nd_exp = %d\n", s2, len, d_exp);
-        if (d_exp < -5 || d_exp >= 14) {
-            if (len > 1) {
-                for (i = 0; i < len; ++i)
-                    s2[len-i] = s2[len-i-1];
-                s2[1] = '.';
-                d_exp += len-1;
-                ++len;
-            }
-            s2[len++] = 'e';
-            len += i_to_str(d_exp, s2+len);
+        decimal_pos = len + d_exp;
+        printf("\ns2 = %s\nd_exp = %d\nlen = %d\ndecimal_pos = %d\n", s2, d_exp, len, decimal_pos);
+        if (decimal_pos == 0) {
+            for (i = 0; i < len; i++)
+                s2[len-i+1] = s2[len-i-1];
+            s2[0] = '0';
+            s2[1] = '.';
+            len  += 2;
         }
-        else if (d_exp < 0) {
-            printf("Fucking here; `%s` `%d` `%d`\n", s2, len, d_exp);
-            if (len <= -d_exp) {
-                for (i = 0; i < len; i++) {
-                    s2[len-i+1] = s2[len-i-1];
+        else if (decimal_pos > 0) {
+            decimal_pos -= len;
+            if (decimal_pos > 0) {
+                if (decimal_pos <= 14) {
+                    while (decimal_pos--) s2[len++] = '0';
                 }
+                else {
+                    if (len > 1) {
+                        for (i = 0; i < len-1; i++)
+                            s2[len-i] = s2[len-i-1];
+                        d_exp += i;
+                        s2[1] = '.';
+                        len++;
+                    }
+                    s2[len++] = 'e';
+                    len += i_to_str(d_exp, s2+len);
+                }
+            }
+            else if (decimal_pos < 0) {
+                for (i = 0; i < -decimal_pos; i++)
+                    s2[len-i] = s2[len-i-1];
+                s2[len + decimal_pos] = '.';
+                len++;
+            }
+        }
+        else {
+            if (decimal_pos > -4) {
+                for (i = 0; i < len; i++)
+                    s2[len-decimal_pos-i+1] = s2[len-i-1];
                 s2[0] = '0';
                 s2[1] = '.';
-                len += 2;
+                for (int i = 0; i < -decimal_pos; i++)
+                    s2[2+i] = '0';
+                len -= decimal_pos-2;
             }
             else {
-                for (i = 0; i < len; i++) {
-                    s2[len-i] = s2[len-i-1];
+                if (len > 1) {
+                    for (i = 0; i < len-1; i++)
+                        s2[len-i] = s2[len-i-1];
+                    d_exp += i;
+                    s2[1] = '.';
+                    len++;
                 }
-                s2[1] = '.';
-                ++len;
+                s2[len++] = 'e';
+                len += i_to_str(d_exp, s2+len);
             }
-        }
-        else if (d_exp < 14) {
-            while (d_exp-- > 0) s2[len++] = '0';
         }
         s2[len] = '\0'; // grisu3 doesn't null terminate, so ensure termination.
         return (int)(s2+len-dst);
@@ -393,24 +416,28 @@ int main (void) {
         "0.1",  "12300", "0.000123341231236", "1233412312.3643243",
         "1.23e+102",  "1.23e-98",  "123",  "12.3",  "1.23",  "0.123", "0.0123",
         "-0", "0", "-Inf", "Inf", "NaN", "3e-320", "3.1e-320", "0.0001",
-        "1e-5", "100000000000000", "1e+15"
+        "1e-05", "100000000000000", "1e+15", "1.2334123123643243e+49"
     };
     double sou[] = {
         0.1, 123e2,  123341231236e-15,  123341231236432423432432423432e-20,
         123e100,  123e-100,   123e0,  123e-1,  123e-2,  123e-3,  123e-4,
         -0e0, 0e0, -1/0.0, 1/0.0, 0/0.0, 3e-320, 3.1e-320, 1e-4,
-        1e-5, 1e14, 1e15
+        1e-5, 1e14, 1e15, 123341231236432423432432423432e20
     };
 
     for (unsigned int i = 0; i < sizeof(sou)/sizeof(sou[0]); i++) {
         for (int j = 0; j < 64; j++)
-            buf[j] = '\0';
+            buf[j] = 'X';
+        printf("\n\n-- starting with %.17g", sou[i]);
         dtoa_grisu3(sou[i], buf);
         printf("-- %.17g is `%s`\n", sou[i], buf);
-        if (strcmp(buf, res[i])) {
+        if (strcmp(buf, res[i]) || buf[strlen(buf)] != '\0') {
             printf("\x1B[1;33mFOR:     `%.17g`\n", sou[i]);
             printf("WANTED:  `%s`\n", res[i]);
             printf("BUT GOT: `%s`\x1B[0m\n", buf);
+            printf("BUF strlen: `%zu`\n", strlen(buf));
+            printf("BUF[strlen]: `%x`\n", buf[strlen(buf)]);
+            exit(1);
         }
     }
 
