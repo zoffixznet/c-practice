@@ -18,14 +18,18 @@ void print_binary(void *start, size_t size) {
 }
 
 unsigned int rotate_left(unsigned int i, int n) {
+    return i << n | i >> (sizeof(i)*8 - n);
 }
-unsigned int rotate_left(unsigned int i, int n) {
+unsigned int rotate_right(unsigned int i, int n) {
+    return i >> n | i << (sizeof(i)*8 - n);
 }
 
 int main(void) {
-    unsigned int i = 12131242142;
+    unsigned int i = 1213124214;
     PRINTB(i);
-    // i = swap_bytes(i);
+    i = rotate_left(i, 7);
+    PRINTB(i);
+    i = rotate_right(i, 7);
     PRINTB(i);
     return 0;
 }
