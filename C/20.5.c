@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <inttypes.h>
 
 #define PRINTB(x) (print_binary((&x), sizeof(x)))
 void print_binary(void *start, size_t size) {
@@ -16,16 +17,17 @@ void print_binary(void *start, size_t size) {
     putchar('\n');
 }
 
-#define M(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
+#define MK_COLOR(r, g, b) ((uint32_t) (r) << 16 | (g) << 8 | (b))
+#define GET_BLUE(c)  ( (c)        & 0xFF)
+#define GET_GREEN(c) (((c) >> 8)  & 0xFF)
+#define GET_RED(c)   (((c) >> 16) & 0xFF)
 
 int main(void) {
-    unsigned char a = 10, b = 20;
-    PRINTB(a);
-    PRINTB(b);
-    printf("a = %d; b = %d\n", a, b);
-    M(a,b);
-    PRINTB(a);
-    PRINTB(b);
-    printf("a = %d; b = %d\n", a, b);
+    uint32_t c = MK_COLOR(255,100,12);
+    PRINTB(c);
+    printf("%" PRIu32 "\n", c);
+    printf("%d\n", GET_RED(c));
+    printf("%d\n", GET_GREEN(c));
+    printf("%d\n", GET_BLUE(c));
     return 0;
 }
