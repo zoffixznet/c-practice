@@ -18,9 +18,17 @@ void print_binary(void *start, size_t size) {
 }
 
 int main(void) {
-    unsigned int i = 132142;
+    unsigned int i = 0xFFFFFFFD;
     PRINTB(i);
-    // i & = i - 1;
-    // PRINTB(i);
+    i &= i - 1;
+    PRINTB(i);
+    i &= i - 1;
+    PRINTB(i);
+    i &= i - 1;
+    PRINTB(i);
+    i &= i - 1;
+    PRINTB(i);
     return 0;
+
+    // it clears the first set LSB
 }
