@@ -18,9 +18,9 @@ void print_binary(void *start, size_t size) {
 }
 
 typedef struct {
-    unsigned int sign:  1;
-    unsigned int exp:   8;
     unsigned int frac: 23;
+    unsigned int exp:   8;
+    unsigned int sign:  1;
 } Float;
 
 typedef union {
@@ -30,11 +30,11 @@ typedef union {
 
 int main(void) {
     FloatView v;
-    v.f = 12e20;
-    PRINTB(v.F.sign);
-    PRINTB(v.F.exp);
-    PRINTB(v.F.frac);
-
+    v.F.sign = 0;
+    v.F.exp = 127;
+    v.F.frac = 2;
+    PRINTB(v);
+    printf("%.18f\n", v.f);
     return 0;
 
     // it clears the first set LSB
