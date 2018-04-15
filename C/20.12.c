@@ -29,8 +29,4 @@ int main(void) {
     unsigned short s = create_short(i1, i2);
     PRINTB(s);
     return 0;
-
-    // (a) ~0 sets all bits to 1, left shift by n, ~ flips new zeros to 1s,
-    // the rest are zeros:  so it's a way to set n LSB to 1
-    // (b) it returns the bitfield from mth to nth bits
 }
